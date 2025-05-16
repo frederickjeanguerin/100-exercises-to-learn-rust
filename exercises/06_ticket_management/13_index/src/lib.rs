@@ -1,5 +1,6 @@
 // TODO: Implement `Index<&TicketId>` and `Index<TicketId>` for `TicketStore`.
 
+use std::ops::Deref;
 use ticket_fields::{TicketDescription, TicketTitle};
 
 #[derive(Clone)]
@@ -57,6 +58,21 @@ impl TicketStore {
         self.tickets.iter().find(|&t| t.id == id)
     }
 }
+
+impl std::ops::Index<TicketId> for TicketStore {
+    type Output = Ticket;
+    fn index(&self, id: TicketId) -> &Self::Output {
+        self.get(id).expect("Ticket not found")
+    }
+}
+
+impl std::ops::Index<&TicketId> for TicketStore {
+    type Output = Ticket;
+    fn index(&self, id: &TicketId) -> &Self::Output {
+        &self[*id]
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
